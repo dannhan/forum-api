@@ -11,8 +11,8 @@ describe('AddThreadUseCase', () => {
     // Arrange
     const useCasePayload = {
       owner: 'user-123',
-      title: 'dicoding',
-      body: 'Hello World!',
+      title: 'sebuah thread',
+      body: 'halo dunia!',
     };
 
     const mockAddedThread = new AddedThread({
