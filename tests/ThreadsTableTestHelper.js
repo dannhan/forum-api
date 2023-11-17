@@ -3,7 +3,7 @@ const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const ThreadsTableTestHelper = {
   async addThread({
-    id = 'thread-123', title = 'dicoding', body = 'Hello World!', owner = 'user-123', date = '2021-08-08T07:22:58.382Z',
+    id = 'thread-123', title = 'sebuah thread', body = 'halo dunia!', owner = 'user-123', date = '2021-08-08T07:22:58.382Z',
   }) {
     const query = {
       text: 'INSERT INTO threads VALUES($1, $2, $3, $4, $5)',
