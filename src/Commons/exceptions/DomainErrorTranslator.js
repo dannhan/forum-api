@@ -1,4 +1,5 @@
 const InvariantError = require('./InvariantError');
+const NotFoundError = require('./NotFoundError');
 
 const DomainErrorTranslator = {
   translate(error) {
@@ -32,9 +33,11 @@ DomainErrorTranslator._directories = {
   'ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION':
     new InvariantError('tidak dapat membuat thread baru karena tipe data tidak sesuai'),
   'ADD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY':
-    new InvariantError('tidak dapat membuat comment baru karena properti yang dibutuhkan tidak ada'),
+    new InvariantError('tidak dapat menambahkan comment baru karena properti yang dibutuhkan tidak ada'),
   'ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION':
-    new InvariantError('tidak dapat membuat comment baru karena tipe data tidak sesuai'),
+    new InvariantError('tidak dapat menambahkan comment baru karena tipe data tidak sesuai'),
+  THREAD_NOT_FOUND:
+    new NotFoundError('tidak dapat menambahkan comment baru karena thread tidak ditemukan'),
 };
 
 module.exports = DomainErrorTranslator;
