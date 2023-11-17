@@ -4,12 +4,11 @@ const UsersTableTestHelper = require('./UsersTableTestHelper');
 
 const TokenTestHelper = {
   async getAccessToken() {
-    const userPayload = {
-      id: 'user-123',
-      username: 'dicoding',
-    };
-    await UsersTableTestHelper.addUser(userPayload);
-    return Jwt.token.generate(userPayload, process.env.ACCESS_TOKEN_KEY);
+    await UsersTableTestHelper.addUser({});
+    return Jwt.token.generate(
+      { id: 'user-123', username: 'dicoding' },
+      process.env.ACCESS_TOKEN_KEY,
+    );
   },
 };
 
