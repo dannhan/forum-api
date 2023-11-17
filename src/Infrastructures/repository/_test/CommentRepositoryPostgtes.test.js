@@ -77,19 +77,25 @@ describe('CommentRepositoryPostgres', () => {
 
     it('should throw AuthorizationError when comment owner is not match', async () => {
       // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', owner: 'user-123' });
+
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
-      await CommentsTableTestHelper.addComment({ id: 'comment-123', owner: 'user-321' });
 
       // Action & Assert
-      await expect(commentRepositoryPostgres.verifyCommentOwner('comment-123', 'user-123'))
+      await expect(commentRepositoryPostgres.verifyCommentOwner('comment-123', 'user-321'))
         .rejects
         .toThrowError(AuthorizationError);
     });
 
     it('should not throw error when comment is valid', async () => {
       // Arrange
-      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ owner: 'user-123' });
       await CommentsTableTestHelper.addComment({ id: 'comment-123', owner: 'user-123' });
+
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
       // Action & Assert
       await expect(commentRepositoryPostgres.verifyCommentOwner('comment-123', 'user-123'))
@@ -102,6 +108,8 @@ describe('CommentRepositoryPostgres', () => {
   describe('deleteCommentById function', () => {
     it('should update is_delete column to true', async () => {
       // Arrange
+      await UsersTableTestHelper.addUser({});
+      await ThreadsTableTestHelper.addThread({});
       await CommentsTableTestHelper.addComment({ id: 'comment-123' });
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 

@@ -229,6 +229,8 @@ describe('/threads endpoint', () => {
       // Arrange
       const id = 'comment-123';
       const threadId = 'thread-123';
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner: 'user-123' });
       await CommentsTableTestHelper.addComment({ id, threadId, owner: 'user-123' });
 
       const server = await createServer(container);
@@ -255,6 +257,8 @@ describe('/threads endpoint', () => {
       // Arrange
       const id = 'comment-123';
       const threadId = 'thread-123';
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner: 'user-123' });
       await CommentsTableTestHelper.addComment({ id, threadId, owner: 'user-123' });
 
       const server = await createServer(container);
@@ -280,6 +284,8 @@ describe('/threads endpoint', () => {
 
     it('should return 404 when threadId not found', async () => {
       // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
       await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', owner: 'user-123' });
 
       const server = await createServer(container);
@@ -305,6 +311,8 @@ describe('/threads endpoint', () => {
 
     it('should return 404 when commentId not found', async () => {
       // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
       await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', owner: 'user-123' });
 
       const server = await createServer(container);
