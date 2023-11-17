@@ -1,5 +1,4 @@
 /* eslint-disable class-methods-use-this */
-/* eslint-disable no-underscore-dangle */
 
 class AddThread {
   constructor(payload) {
