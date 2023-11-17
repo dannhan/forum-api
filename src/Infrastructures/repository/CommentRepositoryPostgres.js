@@ -1,4 +1,6 @@
 const CommentRepository = require('../../Domains/comments/CommentRepository');
+const NotFoundError = require('../../Commons/exceptions/NotFoundError');
+const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 
 class CommentRepositoryPostgres extends CommentRepository {
   constructor(pool, idGenerator) {
@@ -21,9 +23,32 @@ class CommentRepositoryPostgres extends CommentRepository {
     return result.rows[0];
   }
 
-  // async verifyCommentOwner() {}
+  async verifyCommentOwner(commentId, owner) {
+    const query = {
+      text: 'SELECT owner_id FROM comments WHERE id = $1',
+      values: [commentId],
+    };
 
-  // async deleteCommentById() {}
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('COMMENT_NOT_FOUND');
+    }
+
+    const comment = result.rows[0];
+    if (comment.owner_id !== owner) {
+      throw new AuthorizationError('ACCESS_DENIED');
+    }
+  }
+
+  async deleteCommentById(commentId) {
+    const query = {
+      text: 'UPDATE comments SET is_delete = true WHERE id = $1',
+      values: [commentId],
+    };
+
+    await this._pool.query(query);
+  }
 }
 
 module.exports = CommentRepositoryPostgres;

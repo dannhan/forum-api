@@ -2,6 +2,8 @@
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AddComment = require('../../../Domains/comments/entities/AddComment');
 const pool = require('../../database/postgres/pool');
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
@@ -59,6 +61,56 @@ describe('CommentRepositoryPostgres', () => {
       expect(addedComment.id).toEqual('comment-123');
       expect(addedComment.content).toEqual(addComment.content);
       expect(addedComment.owner).toEqual(addComment.owner);
+    });
+  });
+
+  describe('verifyCommentOwner function', () => {
+    it('should throw NotFoundError when comment not found', async () => {
+      // Arrange
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(commentRepositoryPostgres.verifyCommentOwner('comment-123', 'user-123'))
+        .rejects
+        .toThrowError(NotFoundError);
+    });
+
+    it('should throw AuthorizationError when comment owner is not match', async () => {
+      // Arrange
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', owner: 'user-321' });
+
+      // Action & Assert
+      await expect(commentRepositoryPostgres.verifyCommentOwner('comment-123', 'user-123'))
+        .rejects
+        .toThrowError(AuthorizationError);
+    });
+
+    it('should not throw error when comment is valid', async () => {
+      // Arrange
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', owner: 'user-123' });
+
+      // Action & Assert
+      await expect(commentRepositoryPostgres.verifyCommentOwner('comment-123', 'user-123'))
+        .resolves
+        .not
+        .toThrowError(AuthorizationError);
+    });
+  });
+
+  describe('deleteCommentById function', () => {
+    it('should update is_delete column to true', async () => {
+      // Arrange
+      await CommentsTableTestHelper.addComment({ id: 'comment-123' });
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action
+      await commentRepositoryPostgres.deleteCommentById('comment-123');
+
+      // Assert
+      const comments = await CommentsTableTestHelper.findCommentById('comment-123');
+      expect(comments[0].is_delete).toEqual(true);
     });
   });
 });

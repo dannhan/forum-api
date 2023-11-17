@@ -1,3 +1,4 @@
+const AuthorizationError = require('./AuthorizationError');
 const InvariantError = require('./InvariantError');
 const NotFoundError = require('./NotFoundError');
 
@@ -37,7 +38,11 @@ DomainErrorTranslator._directories = {
   'ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION':
     new InvariantError('tidak dapat menambahkan comment baru karena tipe data tidak sesuai'),
   THREAD_NOT_FOUND:
-    new NotFoundError('tidak dapat menambahkan comment baru karena thread tidak ditemukan'),
+    new NotFoundError('thread tidak ditemukan'),
+  COMMENT_NOT_FOUND:
+    new NotFoundError('comment tidak ditemukan'),
+  ACCESS_DENIED:
+    new AuthorizationError('anda tidak berhak mengakses resource ini'),
 };
 
 module.exports = DomainErrorTranslator;

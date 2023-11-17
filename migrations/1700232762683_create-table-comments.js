@@ -12,7 +12,7 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
-    is_deleted: {
+    is_delete: {
       type: 'boolean',
       default: false,
     },

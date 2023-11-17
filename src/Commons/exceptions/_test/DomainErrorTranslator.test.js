@@ -1,3 +1,4 @@
+const AuthorizationError = require('../AuthorizationError');
 const DomainErrorTranslator = require('../DomainErrorTranslator');
 const InvariantError = require('../InvariantError');
 const NotFoundError = require('../NotFoundError');
@@ -33,7 +34,11 @@ describe('DomainErrorTranslator', () => {
     expect(DomainErrorTranslator.translate(new Error('ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION')))
       .toStrictEqual(new InvariantError('tidak dapat menambahkan comment baru karena tipe data tidak sesuai'));
     expect(DomainErrorTranslator.translate(new Error('THREAD_NOT_FOUND')))
-      .toStrictEqual(new NotFoundError('tidak dapat menambahkan comment baru karena thread tidak ditemukan'));
+      .toStrictEqual(new NotFoundError('thread tidak ditemukan'));
+    expect(DomainErrorTranslator.translate(new Error('COMMENT_NOT_FOUND')))
+      .toStrictEqual(new NotFoundError('comment tidak ditemukan'));
+    expect(DomainErrorTranslator.translate(new Error('ACCESS_DENIED')))
+      .toStrictEqual(new AuthorizationError('anda tidak berhak mengakses resource ini'));
   });
 
   it('should return original error when error message is not needed to translate', () => {
