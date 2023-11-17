@@ -24,7 +24,7 @@ describe('/threads endpoint', () => {
       };
 
       // get token
-      const accessToken = await TokenTestHelper.getAccessToken();
+      const token = await TokenTestHelper.getAccessToken();
 
       // create server
       const server = await createServer(container);
@@ -35,7 +35,7 @@ describe('/threads endpoint', () => {
         url: '/threads',
         payload: requestPayload,
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
