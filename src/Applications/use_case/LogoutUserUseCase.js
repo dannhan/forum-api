@@ -12,6 +12,7 @@ class LogoutUserUseCase {
     await this._authenticationRepository.deleteToken(refreshToken);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   _validatePayload(payload) {
     const { refreshToken } = payload;
     if (!refreshToken) {
