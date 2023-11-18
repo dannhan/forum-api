@@ -43,7 +43,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
 
   async deleteReplyById(replyId) {
     const query = {
-      text: 'UPDATE replies SET is_delete = true WHERE id = $1',
+      text: 'UPDATE replies SET is_delete = true WHERE id = $1 RETURNING id',
       values: [replyId],
     };
 

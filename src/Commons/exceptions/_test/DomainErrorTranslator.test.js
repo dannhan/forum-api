@@ -37,6 +37,8 @@ describe('DomainErrorTranslator', () => {
       .toStrictEqual(new NotFoundError('thread tidak ditemukan'));
     expect(DomainErrorTranslator.translate(new Error('COMMENT_NOT_FOUND')))
       .toStrictEqual(new NotFoundError('comment tidak ditemukan'));
+    expect(DomainErrorTranslator.translate(new Error('REPLY_NOT_FOUND')))
+      .toStrictEqual(new NotFoundError('reply tidak ditemukan'));
     expect(DomainErrorTranslator.translate(new Error('ACCESS_DENIED')))
       .toStrictEqual(new AuthorizationError('anda tidak berhak mengakses resource ini'));
     expect(DomainErrorTranslator.translate(new Error('ADD_REPLY.NOT_CONTAIN_NEEDED_PROPERTY')))

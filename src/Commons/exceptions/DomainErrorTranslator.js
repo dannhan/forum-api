@@ -41,6 +41,8 @@ DomainErrorTranslator._directories = {
     new NotFoundError('thread tidak ditemukan'),
   COMMENT_NOT_FOUND:
     new NotFoundError('comment tidak ditemukan'),
+  REPLY_NOT_FOUND:
+    new NotFoundError('reply tidak ditemukan'),
   ACCESS_DENIED:
     new AuthorizationError('anda tidak berhak mengakses resource ini'),
   'ADD_REPLY.NOT_CONTAIN_NEEDED_PROPERTY':
