@@ -16,6 +16,7 @@ describe('an AddComment entities', () => {
     const payload = {
       content: 123,
       owner: true,
+      threadId: [],
     };
 
     // Action and Assert
@@ -27,13 +28,15 @@ describe('an AddComment entities', () => {
     const payload = {
       content: 'abc',
       owner: 'user-123',
+      threadId: 'thread-123',
     };
 
     // Action
-    const { content, owner } = new AddComment(payload);
+    const { content, owner, threadId } = new AddComment(payload);
 
     // Assert
     expect(content).toEqual(payload.content);
     expect(owner).toEqual(payload.owner);
+    expect(threadId).toEqual(payload.threadId);
   });
 });
