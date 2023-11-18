@@ -25,6 +25,8 @@ exports.up = (pgm) => {
     thread_id: {
       type: 'VARCHAR(50)',
       references: 'threads(id)',
+      notNull: true,
+      onDelete: 'CASCADE',
     },
   });
 };
