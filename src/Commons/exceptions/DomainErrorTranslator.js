@@ -43,6 +43,10 @@ DomainErrorTranslator._directories = {
     new NotFoundError('comment tidak ditemukan'),
   ACCESS_DENIED:
     new AuthorizationError('anda tidak berhak mengakses resource ini'),
+  'ADD_REPLY.NOT_CONTAIN_NEEDED_PROPERTY':
+    new InvariantError('tidak dapat menambahkan reply baru karena properti yang dibutuhkan tidak ada'),
+  'ADD_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION':
+    new InvariantError('tidak dapat menambahkan reply baru karena tipe data tidak sesuai'),
 };
 
 module.exports = DomainErrorTranslator;
