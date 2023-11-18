@@ -35,6 +35,56 @@ class ThreadRepositoryPostgres extends ThreadRepository {
       throw new NotFoundError('THREAD_NOT_FOUND');
     }
   }
+
+  async getThreadById(id) {
+    const query = {
+      // text: `
+      //   SELECT threads.id, threads.title, threads.body, threads.date_created, users.username
+      //   FROM threads
+      //   LEFT JOIN comments ON threads.id = comments.thread_id
+      //   LEFT JOIN users ON threads.owner_id = users.id
+      //   WHERE threads.id = $1
+      //   `,
+
+      text: `
+        SELECT
+          threads.id AS id,
+          threads.title AS title,
+          threads.body AS body,
+          threads.date_created AS date,
+          users_threads.username AS username,
+          JSONB_AGG(
+            JSONB_BUILD_OBJECT(
+              'id', comments.id,
+              'username', users.username,
+              'date', comments.date_created,
+              'content', CASE WHEN comments.is_delete THEN '**komentar telah dihapus**' ELSE comments.content END
+            ) ORDER BY comments.date_created ASC
+          ) AS comments
+        FROM
+          threads
+        JOIN
+          users users_threads ON threads.owner_id = users_threads.id
+        LEFT JOIN
+          comments ON threads.id = comments.thread_id
+        LEFT JOIN
+          users ON comments.owner_id = users.id
+        WHERE
+          threads.id = $1
+        GROUP BY
+          threads.id, threads.title, threads.body, threads.date_created, users_threads.username
+      `,
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('THREAD_NOT_FOUND');
+    }
+
+    return result.rows[0];
+  }
 }
 
 module.exports = ThreadRepositoryPostgres;

@@ -51,8 +51,8 @@ describe('JwtTokenManager', () => {
 
       // Action & Assert
       await expect(jwtTokenManager.verifyRefreshToken(accessToken))
-      .rejects
-      .toThrow(InvariantError);
+        .rejects
+        .toThrow(InvariantError);
     });
 
     it('should not throw InvariantError when refresh token verified', async () => {
@@ -62,8 +62,8 @@ describe('JwtTokenManager', () => {
 
       // Action & Assert
       await expect(jwtTokenManager.verifyRefreshToken(refreshToken))
-      .resolves
-      .not.toThrow(InvariantError);
+        .resolves
+        .not.toThrow(InvariantError);
     });
   });
 

@@ -9,6 +9,7 @@ class RegisteredUser {
     this.fullname = fullname;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   _verifyPayload({ id, username, fullname }) {
     if (!id || !username || !fullname) {
       throw new Error('REGISTERED_USER.NOT_CONTAIN_NEEDED_PROPERTY');

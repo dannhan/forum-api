@@ -72,7 +72,7 @@ const createServer = async (container) => {
         return h.continue;
       }
 
-      // console.error(translatedError.message);
+      // console.error(translatedError);
 
       // penanganan server error sesuai kebutuhan
       const newResponse = h.response({
