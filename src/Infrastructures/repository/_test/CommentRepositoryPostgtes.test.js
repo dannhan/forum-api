@@ -1,4 +1,3 @@
-// create test for CommentRepositoryPostgres here
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
@@ -119,6 +118,32 @@ describe('CommentRepositoryPostgres', () => {
       // Assert
       const comments = await CommentsTableTestHelper.findCommentById('comment-123');
       expect(comments[0].is_delete).toEqual(true);
+    });
+  });
+
+  describe('verifyCommentExists function', () => {
+    it('should throw NotFoundError when comment not found', async () => {
+      // Arrange
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(commentRepositoryPostgres.verifyCommentExists('comment-123'))
+        .rejects
+        .toThrowError(NotFoundError);
+    });
+
+    it('should not throw NotFoundError when comment is found', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({});
+      await ThreadsTableTestHelper.addThread({});
+      await CommentsTableTestHelper.addComment({ id: 'comment-123' });
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(commentRepositoryPostgres.verifyCommentExists('comment-123'))
+        .resolves
+        .not
+        .toThrowError(NotFoundError);
     });
   });
 });

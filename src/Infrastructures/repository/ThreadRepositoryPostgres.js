@@ -38,41 +38,49 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
   async getThreadById(id) {
     const query = {
-      // text: `
-      //   SELECT threads.id, threads.title, threads.body, threads.date_created, users.username
-      //   FROM threads
-      //   LEFT JOIN comments ON threads.id = comments.thread_id
-      //   LEFT JOIN users ON threads.owner_id = users.id
-      //   WHERE threads.id = $1
-      //   `,
-
       text: `
         SELECT
-          threads.id AS id,
-          threads.title AS title,
-          threads.body AS body,
-          threads.date_created AS date,
-          users_threads.username AS username,
+          t.id AS id,
+          t.title AS title,
+          t.body AS body,
+          t.date_created AS date,
+          u_thread.username AS username,
           JSONB_AGG(
             JSONB_BUILD_OBJECT(
-              'id', comments.id,
-              'username', users.username,
-              'date', comments.date_created,
-              'content', CASE WHEN comments.is_delete THEN '**komentar telah dihapus**' ELSE comments.content END
-            ) ORDER BY comments.date_created ASC
+              'id', c.id,
+              'content', CASE WHEN c.is_delete THEN '**komentar telah dihapus**' ELSE c.content END,
+              'username', u_comment.username,
+              'date', c.date_created,
+              'replies', (
+                SELECT COALESCE(
+                  JSONB_AGG(
+                    JSONB_BUILD_OBJECT(
+                      'id', r.id,
+                      'content', CASE WHEN r.is_delete THEN '**balasan telah dihapus**' ELSE r.content END,
+                      'username', u_reply.username,
+                      'date', r.date_created
+                    ) ORDER BY r.date_created ASC
+                  ),
+                  '[]'::jsonb
+                )
+                FROM replies r
+                LEFT JOIN users u_reply ON r.owner_id = u_reply.id
+                WHERE r.comment_id = c.id AND r.is_delete = FALSE
+              )
+            ) ORDER BY c.date_created ASC
           ) AS comments
         FROM
-          threads
+          threads t
         JOIN
-          users users_threads ON threads.owner_id = users_threads.id
+          users u_thread ON t.owner_id = u_thread.id
         LEFT JOIN
-          comments ON threads.id = comments.thread_id
+          comments c ON t.id = c.thread_id
         LEFT JOIN
-          users ON comments.owner_id = users.id
+          users u_comment ON c.owner_id = u_comment.id
         WHERE
-          threads.id = $1
+          t.id = $1
         GROUP BY
-          threads.id, threads.title, threads.body, threads.date_created, users_threads.username
+          t.id, t.title, t.body, t.date_created, u_thread.username
       `,
       values: [id],
     };
