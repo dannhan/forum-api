@@ -14,7 +14,7 @@
     "migrate:test": "node-pg-migrate -f config/database/test.json"
   },
   "keywords": [],
-  "author": "danun",
+  "author": "danunha",
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "^20.1.5",
