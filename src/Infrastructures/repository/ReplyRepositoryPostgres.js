@@ -1,3 +1,4 @@
+const AddedReply = require('../../Domains/replies/entities/AddedReply');
 const ReplyRepository = require('../../Domains/replies/ReplyRepository');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
@@ -20,10 +21,10 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     };
 
     const result = await this._pool.query(query);
-    return result.rows[0];
+    return new AddedReply(result.rows[0]);
   }
 
-  async verifyReplyOwner(replyId, owner) {
+  async verifyReplyOwner(replyId, userId) {
     const query = {
       text: 'SELECT owner_id FROM replies WHERE id = $1',
       values: [replyId],
@@ -36,7 +37,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     }
 
     const reply = result.rows[0];
-    if (reply.owner_id !== owner) {
+    if (reply.owner_id !== userId) {
       throw new AuthorizationError('ACCESS_DENIED');
     }
   }
@@ -48,6 +49,23 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     };
 
     await this._pool.query(query);
+  }
+
+  async getRepliesByThreadId(threadId) {
+    const query = {
+      text: `
+        SELECT replies.id, users.username, replies.content ,replies.date_created, replies.is_delete, replies.comment_id
+        FROM replies
+        INNER JOIN comments ON comments.id = replies.comment_id
+        INNER JOIN users ON users.id = replies.owner_id
+        WHERE comments.thread_id = $1
+        ORDER BY replies.date_created ASC
+      `,
+      values: [threadId],
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows;
   }
 }
 

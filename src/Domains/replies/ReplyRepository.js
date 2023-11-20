@@ -1,14 +1,20 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
+
 class ReplyRepository {
-  async addReply() {
+  async addReply(postReply) {
     throw new Error('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async deleteReplyById() {
+  async deleteReplyById(id) {
     throw new Error('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async verifyReplyOwner() {
+  async verifyReplyOwner(replyId, userId) {
+    throw new Error('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
+
+  async getRepliesByThreadId(threadId) {
     throw new Error('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 }

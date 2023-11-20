@@ -146,4 +146,60 @@ describe('CommentRepositoryPostgres', () => {
         .toThrowError(NotFoundError);
     });
   });
+
+  describe('getCommenstByThreadId', () => {
+    it('should return empty array when no comments in thread', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({});
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
+
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action
+      const comments = await commentRepositoryPostgres.getCommentsByThreadId('thread-123');
+
+      // Assert
+      expect(comments).toBeDefined();
+      expect(comments).toHaveLength(0);
+    });
+
+    it('should return comments correctly', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'john' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-123',
+        content: 'sebuah comment',
+        owner: 'user-123',
+        threadId: 'thread-123',
+      });
+      await UsersTableTestHelper.addUser({ id: 'user-456', username: 'jane' });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-456',
+        content: 'another comment',
+        owner: 'user-456',
+        threadId: 'thread-123',
+        isDelete: true,
+      });
+
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action
+      const comments = await commentRepositoryPostgres.getCommentsByThreadId('thread-123');
+
+      // Assert
+      expect(comments).toBeDefined();
+      expect(comments).toHaveLength(2);
+      expect(comments[0].id).toEqual('comment-123');
+      expect(comments[0].username).toEqual('john');
+      expect(comments[0].content).toEqual('sebuah comment');
+      expect(comments[0].is_delete).toEqual(false);
+      expect(comments[0].date_created).toBeDefined();
+      expect(comments[1].id).toEqual('comment-456');
+      expect(comments[1].username).toEqual('jane');
+      expect(comments[1].content).toEqual('another comment');
+      expect(comments[1].is_delete).toEqual(true);
+      expect(comments[1].date_created).toBeDefined();
+    });
+  });
 });
