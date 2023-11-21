@@ -56,7 +56,6 @@ describe('AddReplyUseCase', () => {
     expect(mockReplyRepository.addReply).toBeCalledWith(new AddReply({
       content: useCasePayload.content,
       owner: useCasePayload.owner,
-      threadId: useCasePayload.threadId,
       commentId: useCasePayload.commentId,
     }));
   });

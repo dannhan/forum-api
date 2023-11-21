@@ -29,7 +29,7 @@ describe('GetThreadUseCase', () => {
         username: 'john',
         date_created: '2021-08-08T07:22:33.555Z',
         content: 'another comment',
-        is_delete: false,
+        is_delete: true,
       },
     ];
 
@@ -83,7 +83,7 @@ describe('GetThreadUseCase', () => {
           id: 'comment-456',
           username: 'john',
           date: '2021-08-08T07:22:33.555Z',
-          content: 'another comment',
+          content: '**komentar telah dihapus**',
           replies: [],
         },
       ],
