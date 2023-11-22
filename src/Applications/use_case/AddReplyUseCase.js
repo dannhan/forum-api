@@ -20,7 +20,7 @@ class AddReplyUseCase {
     await this._commmentRepository.verifyCommentExists(commentId);
 
     const addReply = new AddReply({
-      content, owner, threadId, commentId,
+      content, owner, commentId,
     });
 
     return this._replyRepository.addReply(addReply);
